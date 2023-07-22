@@ -14,6 +14,7 @@ import { useTheme } from '@mui/styles';
 import { ClassNames } from '@emotion/react';
 
 import useStyles from './styles';
+import { useGetGenresQuery } from '../../services/TMDB';
 
 const categories = [
   { label: 'Popular', value: 'popular' },
@@ -35,6 +36,9 @@ const SideBar = ({ useMobileOpen }) => {
     'https://fontmeme.com/permalink/230720/8b96f16beb746a6bbf2521aa47006a13.png';
   const redLogo =
     'https://fontmeme.com/permalink/230720/e6afda1a6321aeda7fe63ba2fedc20a5.png';
+  const { data, isFetching } = useGetGenresQuery();
+
+  console.log(data);
 
   return (
     <div>
@@ -74,10 +78,15 @@ const SideBar = ({ useMobileOpen }) => {
         <List>
           <ListSubheader>Categories</ListSubheader>
 
-          {demoCategories.map(({ label, value }) => (
-            <Link key={value} className={classes.links} to="/">
-              <ListItem onClick={() => {}} button>
-                {/* <ListItemIcon>
+          {isFetching ? (
+            <Box display="flex" justifyContent="center">
+              <CircularProgress size="4rem" />
+            </Box>
+          ) : (
+            data.genres.map(({ name, id }) => (
+              <Link key={name} className={classes.links} to="/">
+                <ListItem onClick={() => {}} button>
+                  {/* <ListItemIcon>
                   <img
                     src={blueLogo}
                     className={classes.genreImages}
@@ -85,10 +94,11 @@ const SideBar = ({ useMobileOpen }) => {
                   />
                 </ListItemIcon> */}
 
-                <ListItemText primary={label} />
-              </ListItem>
-            </Link>
-          ))}
+                  <ListItemText primary={name} />
+                </ListItem>
+              </Link>
+            ))
+          )}
         </List>
       </>
     </div>
